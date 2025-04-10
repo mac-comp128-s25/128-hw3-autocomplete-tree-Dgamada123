@@ -52,6 +52,7 @@ public class TestPrefixTree {
         assertEquals(10, tree.size());
     }
 
+    
     @Test
     public void testPrefix(){
         PrefixTree tree = new PrefixTree();
