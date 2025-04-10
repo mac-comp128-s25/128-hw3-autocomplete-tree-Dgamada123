@@ -40,27 +40,25 @@ public class PrefixTree {
             root.children.put(word.charAt(0), aLetterNode);
         } 
 
-        
         aLetterNode = root.children.get(word.charAt(0));
-
         
             for (int i = 1; i < word.length(); i++) {
-                
-                Character character = word.charAt(i);
-                TreeNode nextLetter = new TreeNode();
-                nextLetter.letter = character;
 
+                Character character = word.charAt(i);
+                
                 if (!aLetterNode.children.containsKey(character)) {
+                    TreeNode nextLetter = new TreeNode();
+                    nextLetter.letter = character;
+
                     aLetterNode.children.put(character, nextLetter);
 
-                    aLetterNode = nextLetter;
-                    aLetterNode.letter = nextLetter.letter;
+                }
 
-                    if (i == word.length()-1) {
-                        nextLetter.isWord = true;
-                        size++;
-                    }
-    
+                aLetterNode = aLetterNode.children.get(character);
+
+                if (i == word.length()-1 && !aLetterNode.isWord) {
+                    aLetterNode.isWord = true;
+                    size++;
                 }
         }
     }
@@ -73,18 +71,34 @@ public class PrefixTree {
      */
     public boolean contains(String word){
 
-        for (int i=0; i<word.length(); i++) {
-            if (root.children.containsKey(word.charAt(i))) {
-                if (root.children.get(word.charAt(i)).isWord) {
-                    return true;
-                }
-                root.children = root.children.get(word.charAt(i)).children;
-                continue;
-            } else {
-                return false;
+        
+        TreeNode aLetterNode = new TreeNode();
+        aLetterNode.letter = word.charAt(0);
+
+        if (root.children.containsKey(word.charAt(0))) {
+            aLetterNode = root.children.get(word.charAt(0));
+        } else {
+            return false;
+        }
+
+        for (int i = 1; i < word.length(); i++) {
+
+            Character character = word.charAt(i);
+            
+            if (aLetterNode.children.containsKey(character)) {
+                TreeNode nextLetter = new TreeNode();
+                nextLetter.letter = character;
+            }
+
+            aLetterNode = aLetterNode.children.get(character);
+
+            if (i == word.length()-1 && aLetterNode.isWord) {
+                return true;
             }
         }
+
         return false;
+
     }
 
     /**
@@ -95,6 +109,9 @@ public class PrefixTree {
      */
     public ArrayList<String> getWordsForPrefix(String prefix){
         //TODO: complete me
+        
+
+
         return null;
     }
 
