@@ -71,7 +71,6 @@ public class PrefixTree {
      */
     public boolean contains(String word){
 
-        
         TreeNode aLetterNode = new TreeNode();
         aLetterNode.letter = word.charAt(0);
 
@@ -102,6 +101,28 @@ public class PrefixTree {
     }
 
     /**
+     * Helper method for getWordsForPrefix
+     */
+    public ArrayList<String> getWordsForPrefixHelper(String prefix, TreeNode currentNode) {
+
+        ArrayList<String> prefixList = new ArrayList<>();
+
+        if (currentNode.children.isEmpty()) {
+            return prefixList;
+        }
+
+        prefix+= currentNode.letter;
+
+        if (currentNode.isWord) {
+            prefixList.add(prefix);
+        }
+
+        getWordsForPrefixHelper(prefix, currentNode);
+
+        return null;
+    }
+
+    /**
      * Finds the words in the tree that start with prefix (including prefix if it is a word itself).
      * The order of the list can be arbitrary.
      * @param prefix
@@ -109,11 +130,39 @@ public class PrefixTree {
      */
     public ArrayList<String> getWordsForPrefix(String prefix){
         //TODO: complete me
+
+        ArrayList<String> prefixList = new ArrayList<>();
+
+        //aNode is now the first node from the root's descendents
+        TreeNode aNode = new TreeNode();
+        aNode = root.children.get(prefix.charAt(0));
+
+        for (int i = 0; i < prefix.length(); i++) {
+            
+            aNode.letter = prefix.charAt(i);
+            aNode = aNode.children.get(prefix.charAt(i));
+
+            if (i == prefix.length()) {
+                //or prefix.charAt(i)
+                if (aNode.isWord) {
+                    prefixList.add(prefix);
+                }
+            }
+        }
+        
+       
+        for (TreeNode aChar : aNode.children.values()) {
+            getWordsForPrefixHelper(prefix, aChar);
+        }
+
         
 
-
-        return null;
+        return prefixList;
     }
+
+    
+
+    
 
     /**
      * @return the number of words in the tree
@@ -122,4 +171,20 @@ public class PrefixTree {
         return size;
     }
     
+
+
+    //Check: similar to contains method, where i check if it is in there, if not in there return an empty list. 
+
+    //traverses to end of prefix
+    //checks if prefix is a word itself
+    //for all children, call helper
+
+
+    //update prefix, check if isword, call itself
+
+
+
+    // if there are multiple decendents, call recursive method
+    // if word, add it to the list. Then, for each child, call prefixhelper. PrefixHelper will check if it is a word
+    // Update prefix. Then loops through children, and calls itself in this loop.
 }
