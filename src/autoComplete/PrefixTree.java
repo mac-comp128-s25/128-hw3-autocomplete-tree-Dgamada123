@@ -31,31 +31,20 @@ public class PrefixTree {
      * @param word
      */
     public void add(String word){
-
-        
         TreeNode aLetterNode = new TreeNode();
         aLetterNode.letter = word.charAt(0);
-
         if (!root.children.containsKey(word.charAt(0))) {
             root.children.put(word.charAt(0), aLetterNode);
         } 
-
         aLetterNode = root.children.get(word.charAt(0));
-        
             for (int i = 1; i < word.length(); i++) {
-
                 Character character = word.charAt(i);
-                
                 if (!aLetterNode.children.containsKey(character)) {
                     TreeNode nextLetter = new TreeNode();
                     nextLetter.letter = character;
-
                     aLetterNode.children.put(character, nextLetter);
-
                 }
-
                 aLetterNode = aLetterNode.children.get(character);
-
                 if (i == word.length()-1 && !aLetterNode.isWord) {
                     aLetterNode.isWord = true;
                     size++;
@@ -63,140 +52,57 @@ public class PrefixTree {
         }
     }
 
-
     /**
-     * Checks whether the word has been added to the tree
+     * Checks whether the word has been added to the tree. Uses similar methods as the add function to loop through the word's
+     * children nodes for the length of the word to check if the word is contained.
      * @param word
      * @return true if contained in the tree.
      */
     public boolean contains(String word){
-
         TreeNode aLetterNode = new TreeNode();
         aLetterNode.letter = word.charAt(0);
-
         if (root.children.containsKey(word.charAt(0))) {
             aLetterNode = root.children.get(word.charAt(0));
         } else {
             return false;
         }
-
         for (int i = 1; i < word.length(); i++) {
-
             Character character = word.charAt(i);
-            
             if (aLetterNode.children.containsKey(character)) {
                 TreeNode nextLetter = new TreeNode();
                 nextLetter.letter = character;
             }
-
             aLetterNode = aLetterNode.children.get(character);
-
             if (i == word.length()-1 && aLetterNode.isWord) {
                 return true;
             }
         }
-
         return false;
-
     }
 
     /**
-     * Helper method for getWordsForPrefix
+     * Recursive helper method for getWordsForPrefix that recursively functions on each currentNode, which will be children nodes of the
+     * previous currentNode. Each recursion will check if the currentNode is a word, and if so, will add it to the list. Each recursion
+     * will also update the prefix to contain the previous letter node so that prefix is accurately the actual word. 
+     * Once all recursions are complete, the prefixList will be returned.
+     * @param prefix
+     * @param currentNode
+     * @param prefixList
+     * @return
      */
-    public ArrayList<String> getWordsForPrefixHelper(String prefix, TreeNode currentNode) {
-        ArrayList<String> prefixList = new ArrayList<>();
-        // prefix+= currentNode.letter;
-
-
-    //check if tis a word (if yes,add to list)
-    //append prefix's potential values separately by calling itself
-    // call itself?
-    
-            if (currentNode.isWord) {
-                prefix+=currentNode.letter;
-                prefixList.add(prefix);
-            }
-            for (TreeNode aNode: currentNode.children.values()) {
-                
-                if (aNode.isWord) {
-                    prefix+=currentNode.letter;
-                    prefix+=aNode.letter;
-                    prefixList.add(prefix);
-                    currentNode = aNode;
-        
-                } else {
-                    prefix+=currentNode.letter;
-                    prefix+=aNode.letter;         
-                    currentNode = aNode;
-                    // getWordsForPrefixHelper(prefix, currentNode);
-                } 
-                if (currentNode.children.values().isEmpty()) {
-                    getWordsForPrefixHelper(prefix, aNode);
-                }
-                
-            }
-            // getWordsForPrefixHelper(prefix, currentNode);
-
+    public ArrayList<String> getWordsForPrefixHelper(String prefix, TreeNode currentNode, ArrayList<String> prefixList) {
+        if (currentNode.isWord) {
+            prefix+=currentNode.letter;
+            prefixList.add(prefix);
+        } else {
+            prefix+=currentNode.letter;
+        }
+        for (TreeNode aNode: currentNode.children.values()) {
+            TreeNode placeholderNode = aNode;
+            getWordsForPrefixHelper(prefix, placeholderNode, prefixList);
+        }
         return prefixList;
     }
-
-
-                // currentNode = aNode;
-                // // prefix+=currentNode.letter;
-                // if (currentNode.isWord) {
-                //     prefixList.add(prefix);
-                //     getWordsForPrefixHelper(prefix, currentNode);
-                    
-                // } else {
-                //     getWordsForPrefixHelper(prefix, currentNode);
-                // }
-                
-
-                // currentNode = aNode;
-
-                // if (currentNode.isWord) {
-                //     prefix+=currentNode.letter;
-                //     prefixList.add(prefix);
-                //     getWordsForPrefixHelper(prefix, currentNode);             
-
-                // } else {
-                //     prefix+=currentNode.letter;
-                //     getWordsForPrefixHelper(prefix, currentNode);             
-
-                // }
-                // getWordsForPrefixHelper(prefix, currentNode);   
-
-                //////////
-
-    // {
-    //     ArrayList<String> prefixList = new ArrayList<>();
-
-    // //check if tis a word (if yes,add to list)
-    // //append prefix's potential values separately by calling itself
-    // // call itself?
-    //     while (!currentNode.children.isEmpty()) {
-    //         if (currentNode.isWord) {
-    //             prefixList.add(prefix);
-    //         }
-    //         for (TreeNode aNode: currentNode.children.values()) {
-
-    //             prefix+= currentNode.letter;
-
-    //             currentNode = aNode;
-                
-    //             if (currentNode.isWord) {
-    //                 prefix+=currentNode.letter;
-    //                 prefixList.add(prefix);
-                    
-                    
-                    
-    //             }
-    //             // getWordsForPrefixHelper(prefix, currentNode);             
-    //         }
-    // }
-    
-    //     return prefixList;
-    // }
 
     /**
      * Finds the words in the tree that start with prefix (including prefix if it is a word itself).
@@ -205,48 +111,26 @@ public class PrefixTree {
      * @return list of words with prefix
      */
     public ArrayList<String> getWordsForPrefix(String prefix){
-
         ArrayList<String> prefixList = new ArrayList<>();
-
-        //aNode is now the first node from the root's descendents
         TreeNode aNode = new TreeNode();
-
-        //check if prefix exists
         if (root.children.containsKey(prefix.charAt(0))) {
             aNode = root.children.get(prefix.charAt(0));
-
         for (int i = 1; i < prefix.length(); i++) {
-            
-            // aNode.letter = prefix.charAt(i);
             aNode = aNode.children.get(prefix.charAt(i));
-
             if (i == prefix.length()-1) {
-                //or prefix.charAt(i)
                 if (aNode.isWord) {
                     prefixList.add(prefix);
                 }
             }
         }
-       
         for (TreeNode aChar : aNode.children.values()) {
-            getWordsForPrefixHelper(prefix, aChar);
-            
-            for (String aWord : getWordsForPrefixHelper(prefix, aChar)) {
-                prefixList.add(aWord);
-            }
+            getWordsForPrefixHelper(prefix, aChar, prefixList);
         }
-        
     } else {
         System.out.println("Not a prefix");
     }
-
-    System.out.println(prefixList.toString());
         return prefixList;
     }
-
-    
-
-    
 
     /**
      * @return the number of words in the tree
@@ -254,6 +138,5 @@ public class PrefixTree {
     public int size(){
         return size;
     }
-    
 
 }

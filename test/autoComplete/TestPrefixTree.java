@@ -67,10 +67,10 @@ public class TestPrefixTree {
         tree.add("possum");
         tree.add("pot");
         ArrayList<String> result = tree.getWordsForPrefix("pot");
-        // assertEquals(3, result.size());
-        // assertTrue(result.contains("pot"));
-        // assertTrue(result.contains("pottery"));
-        // assertTrue(result.contains("potato"));
+        assertEquals(3, result.size());
+        assertTrue(result.contains("pot"));
+        assertTrue(result.contains("pottery"));
+        assertTrue(result.contains("potato"));
         
         result = tree.getWordsForPrefix("mu");
         assertEquals(3, result.size());
