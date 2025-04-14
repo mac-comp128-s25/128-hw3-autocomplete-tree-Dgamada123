@@ -5,6 +5,7 @@ import java.util.Map;
 
 /**
  * Represents a node in the prefix tree
+ * Dureti, I got help from multiple preceptors to complete this assignment.
  */
 public class TreeNode {
     // True if this node represents the last character in a word based on the path

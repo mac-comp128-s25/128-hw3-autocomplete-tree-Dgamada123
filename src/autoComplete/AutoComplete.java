@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Main class that autocompletes words
  * This could be used for predictive text entry, like in a cell phone,
  * or for spell checking.
- * 
+ * Dureti, I got help from multiple preceptors to complete this assignment.
  * @author Bret
  */
 public class AutoComplete {
