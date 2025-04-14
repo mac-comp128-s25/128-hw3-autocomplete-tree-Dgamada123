@@ -9,6 +9,7 @@ import java.util.Map;
  * A prefix tree used for autocompletion. The root of the tree just stores links to child nodes (up to 26, one per letter).
  * Each child node represents a letter. A path from a root's child node down to a node where isWord is true represents the sequence
  * of characters in a word.
+ * Dureti, I got help from multiple preceptors to complete this assignment.
  */
 public class PrefixTree {
     private TreeNode root; 
@@ -106,6 +107,9 @@ public class PrefixTree {
 
     /**
      * Finds the words in the tree that start with prefix (including prefix if it is a word itself).
+     * Does so by looping through the length of the prefix, then checking if this prefix is a word.
+     * Calls a helper method to loop through the children of the last node of the prefix and return
+     * the list of words from the helper method.
      * The order of the list can be arbitrary.
      * @param prefix
      * @return list of words with prefix
@@ -116,6 +120,10 @@ public class PrefixTree {
         if (root.children.containsKey(prefix.charAt(0))) {
             aNode = root.children.get(prefix.charAt(0));
         for (int i = 1; i < prefix.length(); i++) {
+            if (aNode == null || aNode.children == null) {
+                System.out.println("Not a prefix");
+                return prefixList;
+            }
             aNode = aNode.children.get(prefix.charAt(i));
             if (i == prefix.length()-1) {
                 if (aNode.isWord) {
@@ -126,9 +134,7 @@ public class PrefixTree {
         for (TreeNode aChar : aNode.children.values()) {
             getWordsForPrefixHelper(prefix, aChar, prefixList);
         }
-    } else {
-        System.out.println("Not a prefix");
-    }
+    } 
         return prefixList;
     }
 
